@@ -1,7 +1,7 @@
 package combridgelabzaddressbook;
 
 public class Contacts {
-    private String firstName;
+    String firstName;
     private String lastName;
     private String address;
     private String city;
@@ -97,5 +97,7 @@ public class Contacts {
                 ", mobileNumber=" + mobileNumber +
                 ", emailId='" + emailId + '\'' +
                 '}';
+    }
+    public void put(int indexValue, Contacts contacts) {
     }
 }
