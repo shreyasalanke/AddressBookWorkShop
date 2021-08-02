@@ -14,7 +14,7 @@ public class AddressBookService
 	        System.out.println("Enter First name:");
 	        contact.setFirstName(scanner.next());
 
-	        System.out.println("Enter Last Name:");
+	        System.out.println("Enter last Name:");
 	        contact.setLastName(scanner.next());
 
 	        System.out.println("Enter Address:");
