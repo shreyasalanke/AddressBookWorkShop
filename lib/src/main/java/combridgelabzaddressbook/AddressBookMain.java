@@ -11,7 +11,7 @@ public class AddressBookMain
         while (!isExit)
         {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("\nEnter options\n 1.Add Contact.\n 2.Edit Contact.\n 3.Delete Contact.\n 4.Display Contact.\n 5.Exit.");
+            System.out.println("\nEnter options\n 1.Add Contact.\n 2.Edit Contact.\n 3.Delete Contact.\n 4.Search City.\n 5.Display Contact.\n 6.Exit.");
             int userInput = scanner.nextInt();
             switch (userInput)
             {
@@ -27,9 +27,13 @@ public class AddressBookMain
                     service.deleteContact(personName);
                     break;
                 case 4:
+               	 System.out.println("Enter the city to be Searched:");
+               	 String searchCity = scanner.next();
+               	 service.searchaPersoninaCity(searchCity);
+                case 5:
                     service.displayList();
                     break;
-                case 5:
+                case 6:
                     isExit = true;
                     break;
                 default:
