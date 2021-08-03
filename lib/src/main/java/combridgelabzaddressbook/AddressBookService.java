@@ -2,11 +2,14 @@ package combridgelabzaddressbook;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 
 public class AddressBookService
 {
+    public HashMap<Integer,Contact> contacts = new HashMap<>();
+
     static Scanner scanner = new Scanner(System.in);
     ArrayList<Contact> contactlist = new ArrayList<>();
     private Map<String, ArrayList<Contact>> AddressBooks = new HashMap<>();
@@ -20,6 +23,7 @@ public class AddressBookService
 
         System.out.println("Enter Last Name:");
         contact.setLastName(scanner.next());
+        
 
         System.out.println("Enter Address:");
         contact.setAddress(scanner.next());
@@ -44,9 +48,12 @@ public class AddressBookService
         String bookName  = scanner.next();
         if(AddressBooks.containsKey(bookName))
         {
-            ArrayList<Contact> contactList = AddressBooks.get(bookName);
-            contactList.add(contact);
-            AddressBooks.put(bookName,contactList);
+        	contactlist.stream().filter(value -> value.getFirstName(). equals(contact.getFirstName())).forEach(value -> 
+    	    {
+    	    	System.out.println("Duplicate Contact");
+    	    	addNewContact();
+    	    });            contactlist.add(contact);
+            AddressBooks.put(bookName,contactlist);
             System.out.println("New Contact Added Successfully");
         }
         else
@@ -55,7 +62,10 @@ public class AddressBookService
             AddressBooks.put(bookName,contactlist);
             System.out.println("New book created and added Contact Added Successfully");
         }
+
     }
+   
+    
     public void editContact()
     {
         String enteredFirstName;
@@ -102,7 +112,8 @@ public class AddressBookService
                         contactlist.get(i).setEmail(scanner.next());
                         break;
                     default:
-                        System.out.println("Invalid Entry");                        
+                        System.out.println("Invalid Entry");
+                        
                 }     
             }
         }
@@ -124,5 +135,5 @@ public class AddressBookService
     public void displayList() 
     {
         for (Contact iterator : contactlist) System.out.println(iterator);
-    }
+    }   
 }
