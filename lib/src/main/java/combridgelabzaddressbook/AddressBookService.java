@@ -178,6 +178,5 @@ public class AddressBookService
     public void displayList() 
     {
         for (Contact iterator : contactlist) System.out.println(iterator);
-    }
-    
+    }   
 }
