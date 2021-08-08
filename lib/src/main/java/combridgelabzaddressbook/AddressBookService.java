@@ -175,8 +175,11 @@ public class AddressBookService
             System.out.println("total persons:"+countPerson);
         }
     }
+    public void sortByFirstName() {
+		System.out.println(AddressBooks.entrySet().stream().sorted(Map.Entry.comparingByKey()).collect(Collectors.toList()));
+	}
     public void displayList() 
     {
         for (Contact iterator : contactlist) System.out.println(iterator);
-    }   
+    }  
 }
