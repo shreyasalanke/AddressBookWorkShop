@@ -1,6 +1,5 @@
 package combridgelabzaddressbook;
 
-
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.List;
@@ -15,8 +14,8 @@ public class AddressBookServiceTest
     @Test
     public void givenAddressBook_WhenUpdate_ShouldSyncWithDB() throws AddressBookException {
         AddressBookJDBC addressBookJDBC = new AddressBookJDBC();
-        addressBookJDBC.updateRecord("Nethaji", "GKW Lauout");
-        boolean result = addressBookJDBC.checkUpdatedRecordSyncWithDatabase("Nethaji");
+        addressBookJDBC.updateRecord("Shreya", "NJP Layout");
+        boolean result = addressBookJDBC.checkUpdatedRecordSyncWithDatabase("Shreya");
         Assert.assertTrue(result);
     }
     @Test
@@ -28,6 +27,14 @@ public class AddressBookServiceTest
     @Test
     public void givenAddressBook_WhenRetrieved_ShouldReturnCountOfCity() throws AddressBookException {
         AddressBookJDBC addressBookJDBC = new AddressBookJDBC();
-        Assert.assertEquals(2, addressBookJDBC.readAddressBookData("count", "Hyderabad"));
+        Assert.assertEquals(2, addressBookJDBC.readAddressBookData("count", "shivamogga"));
+    }
+    @Test
+    public void givenAddressBookDetails_WhenAdded_ShouldSyncWithDB() throws AddressBookException {
+        AddressBookJDBC addressBookJDBC = new AddressBookJDBC();
+        addressBookJDBC.readAddressBookData(AddressBookJDBC.IOService.DB_IO);
+        addressBookJDBC.addNewContact("Sharan", "Gowdar", "SMGS", "Shivamogga", "Karnataka", "511223", "9909947866", "sharan8@gmail.com","Friend", "2020-04-09");
+        boolean result = addressBookJDBC.checkUpdatedRecordSyncWithDatabase("Sharan");
+        Assert.assertTrue(result);
     }
 }
