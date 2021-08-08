@@ -1,5 +1,6 @@
 package combridgelabzaddressbook;
 
+import com.google.gson.Gson;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -15,13 +16,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 
 
@@ -35,6 +44,8 @@ public class AddressBookService
     public static final String FILE_PATH="C:\\Users\\Admin\\Desktop";
     public static String addressBookFile = "AddressBookFile.txt";
     public static final String CSV_FILE="/addressBook.csv";
+    public static final String JSON_FILE="/addressBook.json";
+
 
 
     public void addNewContact()
@@ -295,4 +306,110 @@ public class AddressBookService
         }
     }
     
+    public void writeToJson()
+    {
+        List<Contact> contacts = getContentOfCsv();
+        Gson gson = new Gson();
+        String json = gson.toJson(contacts);
+        try
+        {
+            FileWriter writer = new FileWriter(FILE_PATH+JSON_FILE);
+            writer.write(json);
+            writer.close();
+            System.out.println("Written sucessfully");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    public void readFromJson()
+    {
+        try
+        {
+            Gson gson = new Gson();
+            BufferedReader br = new BufferedReader(new FileReader(FILE_PATH+JSON_FILE));
+            Contact[] contacts = gson.fromJson(br,Contact[].class);
+            List<Contact> contactsList = Arrays.asList(contacts);
+            for(Contact contact: contactsList) {
+                System.out.println("Name : " + contact.getFirstName()+" "+contact.getLastName());
+                System.out.println("Email : " + contact.getEmail());
+                System.out.println("PhoneNo : " + contact.getPhoneNumber());
+                System.out.println("Address : " + contact.getAddress());
+                System.out.println("State : " + contact.getState());
+                System.out.println("City : " + contact.getCity());
+                System.out.println("Zip : " + contact.getZip());
+                System.out.println("==========================");
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    private List<Contact> getContentOfCsv()
+    {
+        try
+        {
+            Reader reader = Files.newBufferedReader(Paths.get(FILE_PATH+CSV_FILE));
+            CsvToBean<Contact> csvToBean = new CsvToBeanBuilder<Contact>(reader)
+                    .withType(Contact.class)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .build();
+            return csvToBean.parse();
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private static AddressBookService addressBookDBService;
+
+   AddressBookService() {
+    }
+
+    public static AddressBookService getInstance() {
+        if (addressBookDBService == null)
+            addressBookDBService = new AddressBookService();
+        return addressBookDBService;
+    }
+
+    public List<Contact> readData() throws AddressBookException {
+        String sql = "SELECT * FROM address_book; ";
+        return this.getAddressBookDataUsingDB(sql);
+    }
+
+    private List<Contact> getAddressBookDataUsingDB(String sql) throws AddressBookException {
+        List<Contact> addressBookList = new ArrayList<>();
+        try (Connection connection = AddressBookConnection.getConnection();) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            addressBookList = this.getAddressBookData(resultSet);
+        } catch (SQLException e) {
+            throw new AddressBookException(e.getMessage(), AddressBookException.ExceptionType.DATABASE_EXCEPTION);
+        }
+        return addressBookList;
+    }
+
+    private List<Contact> getAddressBookData(ResultSet resultSet) throws AddressBookException {
+        List<Contact> addressBookList = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                String firstName = resultSet.getString("FirstName");
+                String lastName = resultSet.getString("LastName");
+                String address = resultSet.getString("Address");
+                String city = resultSet.getString("City");
+                String state = resultSet.getString("State");
+                String zip = resultSet.getString("Zip");
+                String phoneNo = resultSet.getString("Phone");
+                String email = resultSet.getString("Email");
+                addressBookList.add(new Contact());
+            }
+        } catch (SQLException e) {
+            throw new AddressBookException(e.getMessage(), AddressBookException.ExceptionType.DATABASE_EXCEPTION);
+        }
+        return addressBookList;
+    }
 }
